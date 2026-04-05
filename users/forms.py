@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.forms import PasswordChangeForm
 
+from team_finder.constants import PROFILE_ABOUT_ROWS
+
 from .models import User
 
 
@@ -57,7 +59,7 @@ class ProfileEditForm(forms.ModelForm):
         model = User
         fields = ("name", "surname", "email", "about", "phone", "github_url", "avatar")
         widgets = {
-            "about": forms.Textarea(attrs={"rows": 4}),
+            "about": forms.Textarea(attrs={"rows": PROFILE_ABOUT_ROWS}),
         }
 
     def clean_email(self):

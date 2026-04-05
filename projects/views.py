@@ -6,13 +6,11 @@ from django.http import HttpResponseBadRequest, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_GET, require_POST
 
+from team_finder.constants import DEFAULT_PAGE_SIZE, SKILL_SUGGESTIONS_LIMIT
 from team_finder.pagination import paginate_queryset
 
 from .forms import ProjectForm
 from .models import Project, Skill
-
-PAGE_SIZE = 12
-SKILL_SUGGESTIONS_LIMIT = 10
 
 
 def project_list(request):
@@ -22,7 +20,7 @@ def project_list(request):
     if active_skill:
         projects_qs = projects_qs.filter(skills__name__iexact=active_skill).distinct()
 
-    page_obj = paginate_queryset(request, projects_qs, per_page=PAGE_SIZE)
+    page_obj = paginate_queryset(request, projects_qs, per_page=DEFAULT_PAGE_SIZE)
 
     context = {
         "projects": page_obj.object_list,
@@ -119,7 +117,7 @@ def toggle_favorite(request, project_id):
 @login_required
 def favorite_projects(request):
     projects_qs = request.user.favorites.select_related("owner").prefetch_related("participants")
-    page_obj = paginate_queryset(request, projects_qs, per_page=PAGE_SIZE)
+    page_obj = paginate_queryset(request, projects_qs, per_page=DEFAULT_PAGE_SIZE)
 
     context = {
         "projects": page_obj.object_list,

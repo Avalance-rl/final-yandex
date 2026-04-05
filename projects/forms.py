@@ -1,5 +1,7 @@
 from django import forms
 
+from team_finder.constants import PROJECT_DESCRIPTION_ROWS, SKILL_NAME_MAX_LENGTH
+
 from .models import Project, Skill
 
 
@@ -20,7 +22,7 @@ class ProjectForm(forms.ModelForm):
             "status": "Статус",
         }
         widgets = {
-            "description": forms.Textarea(attrs={"rows": 6}),
+            "description": forms.Textarea(attrs={"rows": PROJECT_DESCRIPTION_ROWS}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -45,8 +47,10 @@ class ProjectForm(forms.ModelForm):
             key = name.lower()
             if key in seen:
                 continue
-            if len(name) > 100:
-                raise forms.ValidationError("Название навыка не должно быть длиннее 100 символов.")
+            if len(name) > SKILL_NAME_MAX_LENGTH:
+                raise forms.ValidationError(
+                    f"Название навыка не должно быть длиннее {SKILL_NAME_MAX_LENGTH} символов."
+                )
             seen.add(key)
             normalized_names.append(name)
 

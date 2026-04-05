@@ -1,0 +1,182 @@
+.project-container {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 24px 20px 32px;
+}
+
+.project-card,
+.project-skills,
+.project-participants-card {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--card);
+    box-shadow: var(--shadow);
+}
+
+.project-card {
+    padding: 20px;
+    margin-bottom: 14px;
+}
+
+.project-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.project-card-header-left {
+    display: flex;
+    gap: 10px;
+}
+
+.project-author-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    object-fit: cover;
+    border: 2px solid #ffffff;
+    box-shadow: 0 8px 18px rgba(31, 42, 55, 0.14);
+}
+
+.project-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.project-author {
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.project-title {
+    margin: 4px 0 10px;
+    font-size: clamp(26px, 4vw, 34px);
+    line-height: 1.1;
+    color: #1b2f4b;
+}
+
+.project-description {
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.55;
+}
+
+.project-link {
+    margin-top: 14px;
+    display: inline-flex;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+}
+
+.project-actions {
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.project-skills {
+    padding: 18px;
+    margin-bottom: 14px;
+}
+
+.project-skills h3 {
+    font-size: 18px;
+    color: #1b2f4b;
+}
+
+.project-participants-card {
+    padding: 18px;
+}
+
+.project-participants-card h3 {
+    font-size: 18px;
+    color: #1b2f4b;
+}
+
+.participants-list {
+    margin-top: 12px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.participant-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 10px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: #fbfcfd;
+}
+
+.participant-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    object-fit: cover;
+}
+
+.participant-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.participant-name {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--text);
+}
+
+.participant-role {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+#no-participants {
+    margin: 0;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+@media (max-width: 800px) {
+    .participants-list {
+        grid-template-columns: 1fr;
+    }
+
+    .project-card {
+        padding: 16px;
+    }
+
+    .project-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .project-actions {
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 620px) {
+    .project-container {
+        padding: 18px 14px 26px;
+    }
+
+    .project-title {
+        font-size: 25px;
+    }
+}

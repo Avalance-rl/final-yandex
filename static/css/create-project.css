@@ -1,0 +1,84 @@
+.project-create-container {
+    width: min(760px, calc(100% - 28px));
+    margin: 28px auto;
+    padding: 24px;
+    border-radius: 20px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    box-shadow: var(--shadow);
+}
+
+.project-create-container .form-title {
+    font-size: 30px;
+    color: #1b2f4b;
+    margin-bottom: 18px;
+}
+
+.project-create-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.project-create-form .form-field {
+    gap: 6px;
+}
+
+.project-create-form .form-field textarea {
+    min-height: 110px;
+    resize: vertical;
+}
+
+.project-create-form .form-field small {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.project-create-form .form-errors {
+    padding: 10px 12px;
+    border: 1px solid #fecaca;
+    border-radius: 10px;
+    background: #fff5f5;
+}
+
+.project-create-form .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.project-create-form .cancel-button,
+.project-create-form .save-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 10px 16px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.project-create-form .cancel-button {
+    border: 1px solid var(--line);
+    background: #ffffff;
+    color: var(--muted);
+}
+
+.project-create-form .save-button {
+    border: none;
+    color: #ffffff;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
+}
+
+@media (max-width: 760px) {
+    .project-create-container {
+        padding: 18px;
+    }
+
+    .project-create-container .form-title {
+        font-size: 25px;
+    }
+}

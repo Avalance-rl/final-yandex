@@ -1,7 +1,8 @@
 from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect, render
+
+from team_finder.pagination import paginate_queryset
 
 from .forms import LoginForm, ProfileEditForm, RegisterForm, UserPasswordChangeForm
 from .models import User
@@ -54,8 +55,7 @@ def edit_profile(request):
 
 def participants_list(request):
     participants_qs = User.objects.all().order_by("-date_joined")
-    paginator = Paginator(participants_qs, 12)
-    page_obj = paginator.get_page(request.GET.get("page"))
+    page_obj = paginate_queryset(request, participants_qs, per_page=12)
 
     context = {
         "participants": page_obj.object_list,

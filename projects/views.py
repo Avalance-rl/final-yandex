@@ -1,10 +1,11 @@
 import json
 
 from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator
 from django.http import HttpResponseBadRequest, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_GET, require_POST
+
+from team_finder.pagination import paginate_queryset
 
 from .forms import ProjectForm
 from .models import Project, Skill
@@ -17,8 +18,7 @@ def project_list(request):
     if active_skill:
         projects_qs = projects_qs.filter(skills__name__iexact=active_skill).distinct()
 
-    paginator = Paginator(projects_qs, 12)
-    page_obj = paginator.get_page(request.GET.get("page"))
+    page_obj = paginate_queryset(request, projects_qs, per_page=12)
 
     context = {
         "projects": page_obj.object_list,
@@ -112,8 +112,7 @@ def toggle_favorite(request, project_id):
 @login_required
 def favorite_projects(request):
     projects_qs = request.user.favorites.select_related("owner").prefetch_related("participants")
-    paginator = Paginator(projects_qs, 12)
-    page_obj = paginator.get_page(request.GET.get("page"))
+    page_obj = paginate_queryset(request, projects_qs, per_page=12)
 
     context = {
         "projects": page_obj.object_list,

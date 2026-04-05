@@ -1,4 +1,5 @@
 import json
+from http import HTTPStatus
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest, JsonResponse
@@ -10,6 +11,9 @@ from team_finder.pagination import paginate_queryset
 from .forms import ProjectForm
 from .models import Project, Skill
 
+PAGE_SIZE = 12
+SKILL_SUGGESTIONS_LIMIT = 10
+
 
 def project_list(request):
     projects_qs = Project.objects.select_related("owner").prefetch_related("participants", "skills")
@@ -18,7 +22,7 @@ def project_list(request):
     if active_skill:
         projects_qs = projects_qs.filter(skills__name__iexact=active_skill).distinct()
 
-    page_obj = paginate_queryset(request, projects_qs, per_page=12)
+    page_obj = paginate_queryset(request, projects_qs, per_page=PAGE_SIZE)
 
     context = {
         "projects": page_obj.object_list,
@@ -72,7 +76,7 @@ def edit_project(request, project_id):
 def complete_project(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
     if project.owner_id != request.user.id:
-        return JsonResponse({"status": "error", "message": "forbidden"}, status=403)
+        return JsonResponse({"status": "error", "message": "forbidden"}, status=HTTPStatus.FORBIDDEN)
 
     project.status = Project.STATUS_CLOSED
     project.save(update_fields=["status"])
@@ -84,7 +88,10 @@ def complete_project(request, project_id):
 def toggle_participate(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
     if project.owner_id == request.user.id:
-        return JsonResponse({"status": "error", "message": "owner cannot participate"}, status=400)
+        return JsonResponse(
+            {"status": "error", "message": "owner cannot participate"},
+            status=HTTPStatus.BAD_REQUEST,
+        )
 
     if project.participants.filter(pk=request.user.id).exists():
         project.participants.remove(request.user)
@@ -112,7 +119,7 @@ def toggle_favorite(request, project_id):
 @login_required
 def favorite_projects(request):
     projects_qs = request.user.favorites.select_related("owner").prefetch_related("participants")
-    page_obj = paginate_queryset(request, projects_qs, per_page=12)
+    page_obj = paginate_queryset(request, projects_qs, per_page=PAGE_SIZE)
 
     context = {
         "projects": page_obj.object_list,
@@ -128,7 +135,7 @@ def skill_suggestions(request):
     if not q:
         return JsonResponse([], safe=False)
 
-    skills = Skill.objects.filter(name__icontains=q).order_by("name")[:10]
+    skills = Skill.objects.filter(name__icontains=q).order_by("name")[:SKILL_SUGGESTIONS_LIMIT]
     return JsonResponse([{"id": skill.id, "name": skill.name} for skill in skills], safe=False)
 
 
@@ -137,7 +144,7 @@ def skill_suggestions(request):
 def add_project_skill(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
     if project.owner_id != request.user.id:
-        return JsonResponse({"detail": "forbidden"}, status=403)
+        return JsonResponse({"detail": "forbidden"}, status=HTTPStatus.FORBIDDEN)
 
     try:
         payload = json.loads(request.body or "{}")
@@ -149,12 +156,12 @@ def add_project_skill(request, project_id):
     if skill_id:
         skill = Skill.objects.filter(pk=skill_id).first()
         if skill is None:
-            return JsonResponse({"detail": "skill not found"}, status=404)
+            return JsonResponse({"detail": "skill not found"}, status=HTTPStatus.NOT_FOUND)
 
     if skill is None:
         raw_name = (payload.get("name") or "").strip()
         if not raw_name:
-            return JsonResponse({"detail": "name is required"}, status=400)
+            return JsonResponse({"detail": "name is required"}, status=HTTPStatus.BAD_REQUEST)
 
         existing = Skill.objects.filter(name__iexact=raw_name).first()
         if existing:
@@ -171,7 +178,7 @@ def add_project_skill(request, project_id):
 def remove_project_skill(request, project_id, skill_id):
     project = get_object_or_404(Project, pk=project_id)
     if project.owner_id != request.user.id:
-        return JsonResponse({"detail": "forbidden"}, status=403)
+        return JsonResponse({"detail": "forbidden"}, status=HTTPStatus.FORBIDDEN)
 
     skill = get_object_or_404(Skill, pk=skill_id)
     project.skills.remove(skill)
